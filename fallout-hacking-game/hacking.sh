@@ -7,6 +7,8 @@
 
 ATTEMPTS=0 # Number of active attempts
 KEY=(())   # Two-dimensional array containing solution to puzzle
+CURSOR=""
+
 ## Sub-routines ##
 
 sub randomElement (){
@@ -37,13 +39,21 @@ sub placePasswords(){
 
 }
 
+# Moves the cursor to the passed grid location
+sub moveCursor(){}
+
 # Main loop 
+# only ctrl-c or winning/loosing the game will exit
 sub play(){
 
+    CURSOR="0,0"
+    moveCursor($CURSOR)
     while [ 1 ]
     do
+        read -n 1 key
+        case "$key" in
 
-
+        esac
     done
 }
 
@@ -53,7 +63,7 @@ sub play(){
 # Get the password for the session
 PASSWORD=selectPass()
 GRID=generateRandomField()
-
+play($GRID)
 
 trap 'exit 1' INT TERM
 trap 'tput setaf 9; tput cvvis; clear' EXIT
