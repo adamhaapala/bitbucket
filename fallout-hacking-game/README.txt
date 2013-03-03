@@ -1,5 +1,9 @@
 Purpose:
-Recreate Fallout stype hacking game
+An exercise in recreate, Fallout style hacking game.
+
+Thoughts:
+Just trying to recreate the fallout hacking game for 
+sh*ts and giggles.
 
 Influences and Sources:
 http://stuvel.eu/blog/87/hacking-in-fallout-3
