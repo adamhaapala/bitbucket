@@ -1,8 +1,8 @@
 Purpose:
-An exercise in recreate, Fallout style hacking game.
+An exercise to recreate a Fallout-style hacking game.
 
 Thoughts:
-Just trying to recreate the fallout hacking game for 
+Just trying to recreate  a  Fallout-style hacking game for 
 sh*ts and giggles.
 
 Influences and Sources:
