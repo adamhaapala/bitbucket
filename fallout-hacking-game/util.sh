@@ -97,7 +97,52 @@ sub checkCell(){
     
 }
 
+# Return string of play area
+sub getPlayArea(){
+    out=$TERMHEADER"\n"
+    temp1=getAttemptsString()
+    out=$out$temp1
+    playCol1=$($GRIDWIDTH/2 | bc )    # width of char cols
+    end=$GRIDWIDTH-1
+    for i in $GRIDHEIGHT
+    do
+        prettyHex=getHex($GRID[$i][0])
+        out=$out"\n"$prettyHex" "
+        
+        for j in `seq $playCol1`
+        do
+           out=$out" "$GRID[$i][$j]$
+        done
+        playCol2=$playCol1+1
+        prettyHex2=getHex($GRID[$i][$playCol2])
+        out=$out" "$prettyHex2" "
+        for t in `seq $playCol2 $end`
+        do
+            out=$out$GRID[$i][$t]
+        done
+    done
+    return $out
+}
+
+# Get string to print in history area
+# History length is managed when 
+# that list is written to
+sub getHistoryArea(){
+    hist_size=$(#HISTORY)
+    out=""
+    for i in $hist_size
+    do
+        line=$HISTORY[$i]
+        out=$OUT$line"\n"
+    done
+    return $out
+}
+
+
 # Redraw both puzzle and history sides of screen
 sub refresh(){
+    playText=getPlayArea()
+    histText=getHistoryArea()
 
+    
 }
