@@ -11,8 +11,6 @@ declare -a PASSWORDLIST=('TEST0' 'TEST1' 'TEST2' 'TEST3' 'TEST4' 'TEST5' 'TEST6'
 			# Makes it easier if all passwords 
                         # are the same length
 DIFFICULTY=EASY         # EASY, HARD, H4X0RZ, OHFUCKTHIS
-NUMBEROFTRIES=4         # Default in the game
-			# this is the verticle from the left
 ATTEMPTS=4 	        # Number of active attempts
 
 ## Game Internals ##
@@ -23,7 +21,7 @@ ROBOCO INDUSTRIES (TM) TERMLINK PROTOCOL
 ENTER PASSWORD NOW
 EOF
 
-declare -a HISTORY=()   # Array to contain attempt history 
+declare -a HISTORY=()   # Array to contain attempt history , array of strings
 TERMROW=${tput lines}	# The terminal rows
 TERMCOL=${tput cols}    # and cols, good to know...
 SPLITCOL=$TERMCOL/3     # History bar is % of screen width, 
@@ -45,10 +43,15 @@ RIGHT='^[[C'
 ENTER=''
 ESC=''
 
-Declare -a SOLUTION=()   # Two-dimensional array containing solution to puzzle
+declare -a PASSLOC=()   
 
 # Color/Environment Settings
 BGCOLOR=""
 FGCOLOR=""
 X=""	                 # Col location of cursor
 Y=""                     # Row location of cursor
+
+NUMSECT=2     # Number of sectors to split the screen into
+declare -a MYSCREEN=()  # This is for layout meta data not actual cell/location mappings
+MYSCREEN['PLAY']=('orientation:TLR' '')
+MYSCREEN['HISTORY']=('orientation:BLR' '')

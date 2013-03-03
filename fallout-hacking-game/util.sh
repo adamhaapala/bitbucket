@@ -6,6 +6,31 @@ sub arrowDown(){tput cud$1}
 sub arrowLeft(){tput cub$1}
 sub arrowRight(){tput cuf$1}
 
+# Highlighting tputs
+sub highlightOn(){tput smso}
+sub highlightOff(){tput rmso}
+
+#Cursor functions
+sub remCursor(){tput sc}
+sub restCursor(){tput rc}
+sub moveCursor(){ tput cup $1 $2 }
+
+# Clearing functions
+sub clearScreen(){tput clear}
+sub clearToEOL(){tput el}
+sub clearToEOS(){tput ed}
+
+# Write hightlighted text
+# Sig: startX, startY, text
+sub hightlight(){
+    startX=$1
+    startY=$2
+    txt=$3
+    moveCursor($startX,$startY)
+    highlightOn()
+    echo -n $txt
+    highlightOff()
+}
 
 # Generate the attempts string
 sub getAttemptsString(){
@@ -60,8 +85,6 @@ sub placePasswords(){
 
 }
 
-# Moves the cursor to the passed grid location
-sub moveCursor(){ tput cup $1 $2 }
 
 # Get a snazy hexidecimal # for display
 sub getHex(){
@@ -87,14 +110,54 @@ sub passCompare(){
     return $matches
 }
 
-# Converts screen location into 
-# Grid coordinates and determines
-# if selected element is password
-# solution
+sub inPlay(){}
+sub inPuzzle(){}
+
+# Receive coordinates (probably
+# from cursor position) and checks
+# game status of location
+# i.e. what container is it in,
+# is it part of ornimentation
+# or puzzle, 
 sub checkCell(){
-    col=$1
-    row=$1
-    
+    X=$1
+    Y=$2
+    KEY=$3
+
+    # Check container
+    if [ inPlay($X,$Y)]
+    then
+        if [ inPuzzle($X,$Y) ]
+        then
+            contents=getGridCell($X,$Y)
+            word=$contents['value']
+            range=$contents['range']
+            if [ ${#word} > 1 ]  # Check to see if it's a random char or a pass
+            then
+		# So this is a password.  Lets kick-on the highlighting
+		remCursor()
+                highlight($range['startX'],$range['startY'],$word)
+                restCursor()
+                # while keeping state of the cursor
+                if [$KEY -eq "ENTER"] 
+                then
+                    results=passCompare()
+                    if [$results == ${#PASSWORD}] 
+                    then
+		    else
+                    fi
+                    writeHistSect(getHistSect())
+                fi
+            else
+            fi
+        else
+            return ""
+        fi
+    elif [inHist()]
+	return ""
+    else
+        return ""
+    fi
 }
 
 # Return string of play area
@@ -141,8 +204,11 @@ sub getHistoryArea(){
 
 # Redraw both puzzle and history sides of screen
 sub refresh(){
+    remCursor()
     playText=getPlayArea()
     histText=getHistoryArea()
-
-    
+    clearScreen()
+    writePlaySect($playText)
+    writeHistSect($histText)
+    restCursor()
 }
