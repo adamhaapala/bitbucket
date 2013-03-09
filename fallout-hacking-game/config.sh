@@ -51,7 +51,22 @@ FGCOLOR=""
 X=""	                 # Col location of cursor
 Y=""                     # Row location of cursor
 
-NUMSECT=2     # Number of sectors to split the screen into
 declare -a MYSCREEN=()  # This is for layout meta data not actual cell/location mappings
-MYSCREEN['PLAY']=('orientation:TLR' '')
-MYSCREEN['HISTORY']=('orientation:BLR' '')
+# dimStartX -> upper left hand corner, X screen coordinate of panel
+# dimStartY -> upper left hand corner, Y screen coordinate
+# dimStop X -> lower right hand corner, x screen coordinate
+# dimStop Y -> lower right hand corner, Y screen coordinate
+# If a coordinate is >= its equivalent start coordinate and <= it's stop coordinate then the 
+# coordinate falls into the panel.  We can also use the coordinates of grid1 and grid2 to
+# size/seed our random field of characters onto which the passwords will be placed.  That
+# way we can establish coordinate->game-signifigance by checking the data-structure housing the 
+# generated random/password chars.
+
+# So.. 1) Need screen/game initialization routines
+# 2) Hash out random char/solution structure & difficulty setting
+# 3) finalize attempt verification and screen update
+# 4) 
+MYSCREEN['PLAY']=('orientation:TLR' 'dimStartX:0','dimStartY:0','dimStopX:','dimStopY:')
+MYSCREEN['HISTORY']=('orientation:BLR' 'dimStartX:','dimStartY:','dimStopX:','dimStopY:')
+MYSCREEN['GRID1']=('orientation:TLR' 'dimStartX:0','dimStartY:0','dimStopX:','dimStopY:')
+MYSCREEN['GRID2']=('orientation:TLR' 'dimStartX:0','dimStartY:0','dimStopX:','dimStopY:')
