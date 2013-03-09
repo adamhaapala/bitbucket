@@ -8,6 +8,25 @@
 ## Sub-routines ##
 ./util.sh
 
+# Populate the screen dimensions structure 
+# generate the random character fields, 
+# password lists, and associations between the two
+function initScreen{
+  
+    # Screen obj population here    
+
+    # Get the password for the session
+    PASSWORD=selectPass
+    # Should be able to pass combined dimensions of grid1 and grid2
+    # so (g1l*g1w)+(g2l*g2w)=num of characters to fill in that field 
+    # Keep GRID a 1-dim array 
+    GRID=generateRandomField 
+    GRID=placePasswords $GRID
+    # This way when we place our passwords we're displacing the 
+    # same number of chars as their length and obscounding with 
+    # their screen coordinate pairings
+}
+
 # only ctrl-c or winning/loosing the game will exit
 function play {
 
@@ -54,10 +73,8 @@ function play {
 
 ## Main ##
 
-# Get the password for the session
-PASSWORD=selectPass
-GRID=generateRandomField
-play $GRID
+initScreen
+play
 
 trap 'exit 1' INT TERM
 trap 'tput setaf 9; tput cvvis; clear' EXIT

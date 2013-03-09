@@ -15,6 +15,8 @@ ATTEMPTS=4 	        # Number of active attempts
 
 ## Game Internals ##
 
+declare -a GRID=()
+
 # Header for hacking game
 TERMHEADER= read -d '' TERMHEADER << "EOF"
 ROBOCO INDUSTRIES (TM) TERMLINK PROTOCOL
@@ -30,10 +32,13 @@ HEADERSIZE=5		# Number of rows header and attempts
 HEXWIDTH=7		# How many spaces each hex decoration 
 			# takes up w/ white space
 
+# Need to review need/use of these ###
 GRIDHEIGHT=$TERMROW-$HEADERSIZE # Height of play area
 GRIDWIDTH=($TERMCOL-$SPLITCOL)-($HEXWIDTH*2) # Number of columns
 			# The grid takes in total minus the 
 			# decoration places and history bar
+######################################
+
 
 # Keys to match while in game
 UP='^[[A'
@@ -42,8 +47,6 @@ LEFT='^[[D'
 RIGHT='^[[C'
 ENTER=''
 ESC=''
-
-declare -a PASSLOC=()   
 
 # Color/Environment Settings
 BGCOLOR=""
@@ -65,7 +68,7 @@ declare -a MYSCREEN=()  # This is for layout meta data not actual cell/location 
 # So.. 1) Need screen/game initialization routines
 # 2) Hash out random char/solution structure & difficulty setting
 # 3) finalize attempt verification and screen update
-# 4) 
+# 4) Test and polish code
 MYSCREEN['PLAY']=('orientation:TLR' 'dimStartX:0','dimStartY:0','dimStopX:','dimStopY:')
 MYSCREEN['HISTORY']=('orientation:BLR' 'dimStartX:','dimStartY:','dimStopX:','dimStopY:')
 MYSCREEN['GRID1']=('orientation:TLR' 'dimStartX:0','dimStartY:0','dimStopX:','dimStopY:')
