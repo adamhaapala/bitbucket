@@ -1,39 +1,64 @@
 #!/bin/env bash
 
 # Move cursor param N spaces in the listed direction
-sub arrowUp(){tput cuu$1}
-sub arrowDown(){tput cud$1}
-sub arrowLeft(){tput cub$1}
-sub arrowRight(){tput cuf$1}
+function arrowUp {
+    tput cuu$1
+}
+
+function arrowDown {
+    tput cud$1
+}
+function arrowLeft {
+    tput cub$1
+}
+function arrowRight {
+    tput cuf$1
+}
 
 # Highlighting tputs
-sub highlightOn(){tput smso}
-sub highlightOff(){tput rmso}
+function highlightOn(){
+    tput smso
+}
+function highlightOff(){
+    tput rmso
+}
 
 #Cursor functions
-sub remCursor(){tput sc}
-sub restCursor(){tput rc}
-sub moveCursor(){ tput cup $1 $2 }
+function remCursor(){
+    tput sc
+}
+function restCursor(){
+    tput rc
+}
+function moveCursor(){ 
+    tput cup $1 $2 
+}
 
 # Clearing functions
-sub clearScreen(){tput clear}
-sub clearToEOL(){tput el}
-sub clearToEOS(){tput ed}
+function clearScreen(){
+    tput clear
+}
+function clearToEOL(){
+    tput el
+}
+function clearToEOS(){
+    tput ed
+}
 
 # Write hightlighted text
 # Sig: startX, startY, text
-sub hightlight(){
+function hightlight(){
     startX=$1
     startY=$2
     txt=$3
-    moveCursor($startX,$startY)
-    highlightOn()
+    moveCursor $startX $startY
+    highlightOn
     echo -n $txt
-    highlightOff()
+    highlightOff
 }
 
 # Generate the attempts string
-sub getAttemptsString(){
+function getAttemptsString(){
     string=$ATTEMPTS" ATTEMPT\(S\) LEFT:"
     for i in $ATTEMPTS
     do
@@ -44,7 +69,7 @@ sub getAttemptsString(){
 
 # Given an array, returns a random
 # element
-sub randomElement (){
+function randomElement (){
     array=$1
     list_length=#$array
     return $[( $RANDOM % $list_length )+1]
@@ -52,49 +77,49 @@ sub randomElement (){
 
 # Generates a random ascii char
 # Will need to be refined but good enough for now
-sub getRandomChar(){
+function getRandomChar(){
     rand=$[($RANDOM%256)+1]
     return "\O"$rand
 }
 
 # This gets the password for this session of the game
-sub selectPass(){
+function selectPass(){
    if [ $PASSWORDLIST ]
    then
        list_length=#$PASSWORDLIST
-       ran_num=randomElement($list_length)
+       ran_num=randomElement $list_length
        return $PASSWORDLIST[$ran_num]
    fi
    return -1
 }
 
 # Generates a field of random characters
-sub generateRandomField(){
+function generateRandomField(){
     for i in $GRIDHEIGHT
     do
        for j in $GRIDWIDTH
        do
-         $GRID[$i][$j]=getRandomChar()
+         $GRID[$i][$j]=getRandomChar
        done
     done
-    placePasswords()
+    placePasswords
 }
 
 # Inserts a number of words based on difficulty 
-sub placePasswords(){
-
+function placePasswords(){
+ return 1
 }
 
 
 # Get a snazy hexidecimal # for display
-sub getHex(){
+function getHex(){
     char=`echo $1 | hexdump -x | head -1 | awk '{print $2}' | tr '[:lower:]' '[:upper:]'`
     return "0x"$char
 }
 
 # Takes two strings and says how many 
 # characters are the same.
-sub passCompare(){
+function passCompare(){
     pass1=$1 # Correct pass
     pass2=$2 # Attempt
     matches=0
@@ -110,8 +135,12 @@ sub passCompare(){
     return $matches
 }
 
-sub inPlay(){}
-sub inPuzzle(){}
+function inPlay(){
+    return 1
+}
+function inPuzzle(){
+    return 1
+}
 
 # Receive coordinates (probably
 # from cursor position) and checks
@@ -119,41 +148,49 @@ sub inPuzzle(){}
 # i.e. what container is it in,
 # is it part of ornimentation
 # or puzzle, 
-sub checkCell(){
+function checkCell(){
     X=$1
     Y=$2
     KEY=$3
 
     # Check container
-    if [ inPlay($X,$Y)]
+    if [ inPlay $X $Y]
     then
-        if [ inPuzzle($X,$Y) ]
+        if [ inPuzzle $X $Y ]
         then
-            contents=getGridCell($X,$Y)
+            contents=getGridCell $X $Y 
             word=$contents['value']
             range=$contents['range']
             if [ ${#word} > 1 ]  # Check to see if it's a random char or a pass
             then
 		# So this is a password.  Lets kick-on the highlighting
-		remCursor()
-                highlight($range['startX'],$range['startY'],$word)
-                restCursor()
+		remCursor
+                highlight $range['startX'] $range['startY'] $word
+                restCursor
                 # while keeping state of the cursor
                 if [$KEY -eq "ENTER"] 
                 then
-                    results=passCompare()
+                    results=passCompare
                     if [$results == ${#PASSWORD}] 
                     then
+			# The passwords match, 
+			# Register victory and end game
+			
 		    else
+			# Bad attempt, decrease the attempt count and 
+			# redraw the attemps bar
+			
+			# Also 
+			
                     fi
-                    writeHistSect(getHistSect())
+                    writeHistSect getHistSect
                 fi
             else
             fi
         else
             return ""
         fi
-    elif [inHist()]
+    elif [inHist]
 	return ""
     else
         return ""
@@ -161,7 +198,7 @@ sub checkCell(){
 }
 
 # Return string of play area
-sub getPlayArea(){
+function getPlayArea(){
     out=$TERMHEADER"\n"
     temp1=getAttemptsString()
     out=$out$temp1
@@ -169,7 +206,7 @@ sub getPlayArea(){
     end=$GRIDWIDTH-1
     for i in $GRIDHEIGHT
     do
-        prettyHex=getHex($GRID[$i][0])
+        prettyHex=getHex $GRID[$i][0]
         out=$out"\n"$prettyHex" "
         
         for j in `seq $playCol1`
@@ -177,7 +214,7 @@ sub getPlayArea(){
            out=$out" "$GRID[$i][$j]$
         done
         playCol2=$playCol1+1
-        prettyHex2=getHex($GRID[$i][$playCol2])
+        prettyHex2=getHex $GRID[$i][$playCol2]
         out=$out" "$prettyHex2" "
         for t in `seq $playCol2 $end`
         do
@@ -190,7 +227,7 @@ sub getPlayArea(){
 # Get string to print in history area
 # History length is managed when 
 # that list is written to
-sub getHistoryArea(){
+function getHistoryArea(){
     hist_size=$(#HISTORY)
     out=""
     for i in $hist_size
@@ -203,12 +240,12 @@ sub getHistoryArea(){
 
 
 # Redraw both puzzle and history sides of screen
-sub refresh(){
-    remCursor()
-    playText=getPlayArea()
-    histText=getHistoryArea()
-    clearScreen()
-    writePlaySect($playText)
-    writeHistSect($histText)
-    restCursor()
+function refresh(){
+    remCursor
+    playText=getPlayArea
+    histText=getHistoryArea
+    clearScreen
+    writePlaySect $playText
+    writeHistSect $histText
+    restCursor
 }
